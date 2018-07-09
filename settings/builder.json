@@ -19,7 +19,7 @@
     "portrait": false,
     "upsideDown": false
   },
-  "packageName": "org.cocos2d.helloworld",
+  "packageName": "org.cocos2d.sharingan",
   "privateKey": "",
   "qqplay": {
     "REMOTE_SERVER_ROOT": "",
@@ -31,7 +31,7 @@
   "webOrientation": "auto",
   "wechatgame": {
     "REMOTE_SERVER_ROOT": "",
-    "appid": "wx9efa0e753639658b",
+    "appid": "",
     "isSubdomain": false,
     "orientation": "portrait",
     "subContext": ""
