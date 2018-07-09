@@ -7,33 +7,28 @@
 // Learn life-cycle callbacks:
 //  - [Chinese] http://docs.cocos.com/creator/manual/zh/scripting/life-cycle-callbacks.html
 //  - [English] http://www.cocos2d-x.org/docs/creator/en/scripting/life-cycle-callbacks.html
-
+const util = require('./util');
 cc.Class({
     extends: cc.Component,
 
     properties: {
-        // foo: {
-        //     // ATTRIBUTES:
-        //     default: null,        // The default value will be used only when the component attaching
-        //                           // to a node for the first time
-        //     type: cc.SpriteFrame, // optional, default is typeof default
-        //     serializable: true,   // optional, default is true
-        // },
-        // bar: {
-        //     get () {
-        //         return this._bar;
-        //     },
-        //     set (value) {
-        //         this._bar = value;
-        //     }
-        // },
         timeLabel: {
             default: null,
             type: cc.Label
         },
+
         isStopBtn: {
-            default: false,
+            default: true,
             type: Boolean
+        },
+
+        timeValue: {
+            default: 0,
+            type: Number
+        },
+        stopBtn: {
+            default: null,
+            type: cc.Button
         }
     },
 
@@ -42,15 +37,19 @@ cc.Class({
     // onLoad () {},
 
     start () {
-        this.timeLabel.string = 0;
+        this.isStopBtn = true;
+        this.timeLabel.string = util.formatNumberToTime(this.timeValue, 4);
+        this.stopBtn.node.on('click', this.stopBtnCallback, this);
     },
 
     update (dt) {
-        this.timeLabel.string = this.formatNumberToTime(this.timeLabel.string);
+        if (!this.isStopBtn) {
+            this.timeValue += 1;
+            this.timeLabel.string = util.formatNumberToTime(this.timeValue, 4);
+        }
     },
 
-    formatNumberToTime (timeString) {
-         let timeNumber = Number(this.timeLabel.string);
-         return (timeNumber + 1).toString();
+    stopBtnCallback (event) {
+        this.isStopBtn = !this.isStopBtn;
     }
 });
