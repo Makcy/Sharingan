@@ -106,7 +106,7 @@ cc.Class({
     },
     update (dt) {
         if (!this.isStopBtn) {
-            this.timeValue += 1;
+            this.timeValue += 2;
             this.timeLabel.string = util.formatNumberToTime(this.timeValue);
         }
     },
