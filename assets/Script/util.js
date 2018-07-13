@@ -7,6 +7,6 @@ module.exports = {
     if (timeString.length < length) {
       timeString = repeat('0', (length - timeString.length)) + timeNumber;
     } 
-    return timeString.slice(0, 2) + ':' + timeString.slice(2);
+    return timeString.slice(0, 2) + '.' + timeString.slice(2);
   }
 }

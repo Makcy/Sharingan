@@ -19,14 +19,14 @@
     "portrait": false,
     "upsideDown": false
   },
-  "packageName": "org.cocos2d.sharingan",
+  "packageName": "org.cocos2d.helloworld",
   "privateKey": "",
   "qqplay": {
     "REMOTE_SERVER_ROOT": "",
     "orientation": "portrait"
   },
   "renderMode": "0",
-  "startScene": "2d2f792f-a40c-49bb-a189-ed176a246e49",
+  "startScene": "9c6d07b0-f1fd-4e8f-b750-4cee7ea9220a",
   "title": "Sharingan",
   "webOrientation": "auto",
   "wechatgame": {
