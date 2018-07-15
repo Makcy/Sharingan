@@ -31,11 +31,19 @@ cc.Class({
             default: null,
             type: cc.Node
         },
+        completedNode: {
+            default: null,
+            type: cc.Node
+        },
         timeLabel: {
             default: null,
             type: cc.Label
         },
         conditionLable: {
+            default: null,
+            type: cc.Label
+        },
+        rateLabel: {
             default: null,
             type: cc.Label
         },
@@ -59,6 +67,10 @@ cc.Class({
             type: cc.Button
         },
         continueBtn: {
+            default: null,
+            type: cc.Button
+        },
+        paradeBtn: {
             default: null,
             type: cc.Button
         },
@@ -90,9 +102,19 @@ cc.Class({
 
     // LIFE-CYCLE CALLBACKS:
 
-    // onLoad () {
-        
-    // },
+    onLoad () {
+        if (cc.sys.os != cc.sys.OS_OSX) {
+            wx.showShareMenu();
+            cc.loader.loadRes('texture/share',(err, data) => {
+                wx.onShareAppMessage(() => {
+                    return {
+                        title: config.shareText[parseInt(Math.random()*config.shareText.length,10)],
+                        imageUrl: data.url
+                    }
+                });
+            })
+        }
+    },
 
     start () {
         this.isStopBtn = true;
@@ -103,6 +125,7 @@ cc.Class({
         this.nextBtn.node.on('click', this.nextBtnCallback, this);
         this.resurgenceBtn.node.on('click', this.resurgenceBtnCallback, this);
         this.continueBtn.node.on('click', this.continueBtnCallback, this);
+        this.paradeBtn.node.on('click', this.paradeBtnCallback, this);
     },
     update (dt) {
         if (!this.isStopBtn) {
@@ -117,6 +140,7 @@ cc.Class({
             // 闯关逻辑                     
             const stageConfig = this.getStageConfig();
             if (this.timeValue >= stageConfig.from && this.timeValue <= stageConfig.to) {
+
                 this.gameSuccess();
             } else {
                 this.gameFail();
@@ -124,41 +148,90 @@ cc.Class({
         }
     },
     nextBtnCallback (event) {
-        this.resetMainGameNode(true);
         this.passNode.active = false;
         this.timeValue = 0;
         this.setConditionTip();
         this.setStageTip();
         this.timeLabel.string = util.formatNumberToTime(this.timeValue);
+        this.resetMainGameNode(true);
     },
     resurgenceBtnCallback(event) {
         // 诱导分享
-        this.resurgence();
+        if (cc.sys.os != cc.sys.OS_OSX) {
+            const self = this;
+            cc.loader.loadRes('texture/share',(err, data) => {
+                wx.shareAppMessage({
+                    title: config.shareText[parseInt(Math.random()*config.shareText.length,10)],
+                    imageUrl: data.url,
+                    success(res) {
+                        console.log('分享成功');
+                        self.resurgence();
+                    },
+                    fail(res) {
+                        console.log('分享失败');
+                    } 
+                })
+            })
+        }
     },
     continueBtnCallback(event) {
-        this.stage = 1;
-        this.resurgence();
+        this.resurgence(true);
+    },
+    paradeBtnCallback(event) {
+        // 诱导分享
+        if (cc.sys.os != cc.sys.OS_OSX) {
+            const self = this;
+            cc.loader.loadRes('texture/share',(err, data) => {
+                wx.shareAppMessage({
+                    title: config.shareText[parseInt(Math.random()*config.shareText.length,10)],
+                    imageUrl: data.url,
+                    success(res) {
+                        console.log('分享成功');
+                        self.resurgence(true);
+                    },
+                    fail(res) {
+                        console.log('分享失败');
+                    } 
+                })
+            })
+        }
     },
     setConditionTip() {
         const stageConfig = this.getStageConfig();
         this.conditionLable.string = stageConfig.from === stageConfig.to ? 
-             `规则：按到${util.formatNumberToTime(stageConfig.from)}算你赢` :
-             `规则：按到${util.formatNumberToTime(stageConfig.from)}~${util.formatNumberToTime(stageConfig.to)}算你赢`
+             `挑战：${util.formatNumberToTime(stageConfig.from)}  按到算你赢` :
+             `挑战：${util.formatNumberToTime(stageConfig.from)}~${util.formatNumberToTime(stageConfig.to)}  按到算你赢`
     },
     setStageTip() {
-        this.stageLabel.string = `第 ${this.stage} 关 ${this.getStageConfig().successRate}%用户能闯关通过`;
+        // this.stageLabel.string = `第 ${this.stage} 关 ${this.getStageConfig().successRate}%用户能闯关通过`;
+        this.stageLabel.string = `第 ${this.stage} 关`;
+        this.rateLabel.string = `${this.getStageConfig().successRate}%用户能闯关通过`;
     },
     getStageConfig() {
         if (this.stage <= 5) {
             return config.stageConfig[this.stage - 1];
         } 
-        return {from: 1000, to: 1000, successRate: this.stage < 10 ? (1 - this.stage * 0.1).toFixed(2) :  0.01};
+        return {from: 10, to: 1000, successRate: this.stage < 10 ? (0.01 - this.stage * 0.001).toFixed(2) :  0.01};
     },
     gameSuccess() {
-        this.resetMainGameNode(false);
-        this.passNode.active = true;
-        this.gradeLable.string = `本次成绩：${util.formatNumberToTime(this.timeValue)}`;
-        this.stage += 1;
+        if (this.stage < 5) {
+            this.resetMainGameNode(false);
+            this.passNode.active = true;
+            this.gradeLable.string = `本次成绩：${util.formatNumberToTime(this.timeValue)}`;
+            this.stage += 1;
+        } else {
+            this.resetMainGameNode(false);
+            this.passNode.active = false;
+            this.timeValue = 0;
+            this.stage = 1;
+            this.setConditionTip();
+            this.setStageTip();
+            this.timeLabel.string = util.formatNumberToTime(this.timeValue);
+            this.completedNode.active = true;
+        }
+    },
+    gameComplete() {
+        
     },
     gameFail() {
         this.resetMainGameNode(false);
@@ -169,10 +242,16 @@ cc.Class({
         this.failedTipLabel.string = `离目标只有 ${(diffValue / 100).toFixed(2)}啦~`;
         this.timeValue = 0;
     },
-    resurgence() {
+    resurgence(isRestart = false) {
+        if (isRestart) {
+            this.stage = 1;
+        }
         this.timeValue = 0;
+        this.completedNode.active = false;
         this.failedNode.active = false;
         this.timeLabel.string = util.formatNumberToTime(this.timeValue);
+        this.setConditionTip();
+        this.setStageTip();
         this.resetMainGameNode(true);
     },
     resetMainGameNode(setValue) {
@@ -180,5 +259,6 @@ cc.Class({
         this.stopBtn.node.active = setValue;
         this.timeLabel.node.active = setValue;
         this.conditionLable.node.active = setValue;
+        this.rateLabel.node.active = setValue;
     }
 });
