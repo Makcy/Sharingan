@@ -63,10 +63,10 @@
     "_active": true,
     "_components": [
       {
-        "__id__": 48
+        "__id__": 49
       },
       {
-        "__id__": 49
+        "__id__": 50
       }
     ],
     "_prefab": null,
@@ -143,10 +143,10 @@
     "_active": true,
     "_components": [
       {
-        "__id__": 46
+        "__id__": 47
       },
       {
-        "__id__": 47
+        "__id__": 48
       }
     ],
     "_prefab": null,
@@ -1562,13 +1562,13 @@
         "__id__": 37
       },
       {
-        "__id__": 40
+        "__id__": 41
       },
       {
-        "__id__": 42
+        "__id__": 43
       },
       {
-        "__id__": 44
+        "__id__": 45
       }
     ],
     "_tag": -1,
@@ -1627,6 +1627,9 @@
       },
       {
         "__id__": 39
+      },
+      {
+        "__id__": 40
       }
     ],
     "_prefab": null,
@@ -1755,6 +1758,24 @@
     }
   },
   {
+    "__type__": "cc.Animation",
+    "_name": "",
+    "_objFlags": 0,
+    "node": {
+      "__id__": 37
+    },
+    "_enabled": true,
+    "_defaultClip": {
+      "__uuid__": "a2df5be4-b199-4a4d-819f-b4daa75a2c7a"
+    },
+    "_clips": [
+      {
+        "__uuid__": "a2df5be4-b199-4a4d-819f-b4daa75a2c7a"
+      }
+    ],
+    "playOnLoad": true
+  },
+  {
     "__type__": "cc.Node",
     "_name": "gradeLabel",
     "_objFlags": 0,
@@ -1766,7 +1787,7 @@
     "_active": true,
     "_components": [
       {
-        "__id__": 41
+        "__id__": 42
       }
     ],
     "_prefab": null,
@@ -1811,7 +1832,7 @@
     "_name": "",
     "_objFlags": 0,
     "node": {
-      "__id__": 40
+      "__id__": 41
     },
     "_enabled": true,
     "_useOriginalSize": false,
@@ -1840,7 +1861,7 @@
     "_active": true,
     "_components": [
       {
-        "__id__": 43
+        "__id__": 44
       }
     ],
     "_prefab": null,
@@ -1885,7 +1906,7 @@
     "_name": "",
     "_objFlags": 0,
     "node": {
-      "__id__": 42
+      "__id__": 43
     },
     "_enabled": true,
     "_useOriginalSize": false,
@@ -1914,7 +1935,7 @@
     "_active": true,
     "_components": [
       {
-        "__id__": 45
+        "__id__": 46
       }
     ],
     "_prefab": null,
@@ -1959,7 +1980,7 @@
     "_name": "",
     "_objFlags": 0,
     "node": {
-      "__id__": 44
+      "__id__": 45
     },
     "_enabled": true,
     "_useOriginalSize": false,
@@ -2054,6 +2075,13 @@
     "_enabled": true,
     "stage": 1,
     "life": 1,
+    "timeBgAudioClip": {
+      "__uuid__": "2ce03b75-f57a-4cb6-b8f2-7529d48710ea"
+    },
+    "winBgAudioClip": {
+      "__uuid__": "9bb77469-b551-4881-92b1-f077a1a1375f"
+    },
+    "timeBgAudioId": 1,
     "passNode": {
       "__id__": 15
     },

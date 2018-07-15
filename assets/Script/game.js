@@ -23,6 +23,18 @@ cc.Class({
             default: 1,
             type: cc.Integer
         },
+        timeBgAudioClip: {
+            default: null,
+            url: cc.AudioClip
+        },
+        winBgAudioClip: {
+            default: null,
+            url: cc.AudioClip
+        },
+        timeBgAudioId: {
+            default: -1,
+            type: cc.Integer
+        },
         passNode: {
             default: null,
             type: cc.Node  
@@ -114,6 +126,13 @@ cc.Class({
                 });
             })
         }
+        util.playBtnAudioClip([
+            this.stopBtn,
+            this.nextBtn,
+            this.resurgenceBtn,
+            this.continueBtn,
+            this.paradeBtn
+        ]);
     },
 
     start () {
@@ -136,11 +155,19 @@ cc.Class({
     stopBtnCallback (event) {
         this.isStopBtn = !this.isStopBtn;
         this.stopBtn.getComponent(cc.Sprite).spriteFrame = this.isStopBtn ? this.startBtnSprite : this.stopBtnSprite;
+        if (this.isStopBtn) {
+            cc.audioEngine.pause(this.timeBgAudioId);
+        } else {
+            if (this.timeBgAudioId != -1) {
+                this.timeBgAudioId = cc.audioEngine.play(this.timeBgAudioClip, true, 1);
+            } else {
+                cc.audioEngine.resume(this.timeBgAudioId);
+            }
+        }
         if (this.isStopBtn && this.timeValue != 0) {
             // 闯关逻辑                     
             const stageConfig = this.getStageConfig();
             if (this.timeValue >= stageConfig.from && this.timeValue <= stageConfig.to) {
-
                 this.gameSuccess();
             } else {
                 this.gameFail();
@@ -164,7 +191,6 @@ cc.Class({
                     title: config.shareText[parseInt(Math.random()*config.shareText.length,10)],
                     imageUrl: data.url,
                     success(res) {
-                        console.log('分享成功');
                         self.resurgence();
                     },
                     fail(res) {
@@ -228,10 +254,8 @@ cc.Class({
             this.setStageTip();
             this.timeLabel.string = util.formatNumberToTime(this.timeValue);
             this.completedNode.active = true;
+            this.timeBgAudioId = cc.audioEngine.play(this.winBgAudioClip, false, 1);
         }
-    },
-    gameComplete() {
-        
     },
     gameFail() {
         this.resetMainGameNode(false);

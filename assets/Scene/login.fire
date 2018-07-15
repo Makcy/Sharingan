@@ -65,17 +65,17 @@
         "__id__": 9
       },
       {
-        "__id__": 12
+        "__id__": 13
       }
     ],
     "_tag": -1,
     "_active": true,
     "_components": [
       {
-        "__id__": 15
+        "__id__": 16
       },
       {
-        "__id__": 16
+        "__id__": 17
       }
     ],
     "_prefab": null,
@@ -329,6 +329,9 @@
       },
       {
         "__id__": 11
+      },
+      {
+        "__id__": 12
       }
     ],
     "_prefab": null,
@@ -459,6 +462,24 @@
     }
   },
   {
+    "__type__": "cc.Animation",
+    "_name": "",
+    "_objFlags": 0,
+    "node": {
+      "__id__": 9
+    },
+    "_enabled": true,
+    "_defaultClip": {
+      "__uuid__": "a2df5be4-b199-4a4d-819f-b4daa75a2c7a"
+    },
+    "_clips": [
+      {
+        "__uuid__": "a2df5be4-b199-4a4d-819f-b4daa75a2c7a"
+      }
+    ],
+    "playOnLoad": true
+  },
+  {
     "__type__": "cc.Node",
     "_name": "rankBtn",
     "_objFlags": 0,
@@ -470,10 +491,10 @@
     "_active": true,
     "_components": [
       {
-        "__id__": 13
+        "__id__": 14
       },
       {
-        "__id__": 14
+        "__id__": 15
       }
     ],
     "_prefab": null,
@@ -518,7 +539,7 @@
     "_name": "",
     "_objFlags": 0,
     "node": {
-      "__id__": 12
+      "__id__": 13
     },
     "_enabled": true,
     "_spriteFrame": {
@@ -544,7 +565,7 @@
     "_name": "",
     "_objFlags": 0,
     "node": {
-      "__id__": 12
+      "__id__": 13
     },
     "_enabled": true,
     "transition": 3,
@@ -600,7 +621,7 @@
       "__uuid__": "29158224-f8dd-4661-a796-1ffab537140e"
     },
     "_N$target": {
-      "__id__": 12
+      "__id__": 13
     }
   },
   {
@@ -631,7 +652,7 @@
       "__id__": 11
     },
     "rankBtn": {
-      "__id__": 14
+      "__id__": 15
     }
   }
 ]

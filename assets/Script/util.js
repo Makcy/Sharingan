@@ -8,5 +8,15 @@ module.exports = {
       timeString = repeat('0', (length - timeString.length)) + timeNumber;
     } 
     return timeString.slice(0, 2) + '.' + timeString.slice(2);
+  },
+  playBtnAudioClip (btns) {
+    const onTouchDown = (event) => {
+        cc.loader.loadRes('audio/btn',(err, data) => {
+            cc.audioEngine.play(data, false, 0.5);
+        });
+    }
+    btns.map(b => {
+        b.node.on('touchstart', onTouchDown, b.node);
+    })
   }
 }
