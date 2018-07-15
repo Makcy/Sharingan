@@ -21,7 +21,7 @@ module.exports = {
       successRate: 2.3
     },
     {
-      from: 100,
+      from: 1000,
       to: 1000,
       successRate: 0.01
     }

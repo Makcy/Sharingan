@@ -55,6 +55,10 @@ cc.Class({
             default: null,
             type: cc.Label
         },
+        conditionNode: {
+            default: null,
+            type: cc.Node
+        },
         rateLabel: {
             default: null,
             type: cc.Label
@@ -225,8 +229,8 @@ cc.Class({
     setConditionTip() {
         const stageConfig = this.getStageConfig();
         this.conditionLable.string = stageConfig.from === stageConfig.to ? 
-             `挑战：${util.formatNumberToTime(stageConfig.from)}  按到算你赢` :
-             `挑战：${util.formatNumberToTime(stageConfig.from)}~${util.formatNumberToTime(stageConfig.to)}  按到算你赢`
+             util.formatNumberToTime(stageConfig.from) :
+             `${util.formatNumberToTime(stageConfig.from)} - ${util.formatNumberToTime(stageConfig.to)}`
     },
     setStageTip() {
         // this.stageLabel.string = `第 ${this.stage} 关 ${this.getStageConfig().successRate}%用户能闯关通过`;
@@ -263,7 +267,7 @@ cc.Class({
         const diffValue = Math.min(Math.abs(this.timeValue - stageConfig.to), Math.abs(this.timeValue - stageConfig.from));
         this.failedNode.active = true;
         this.failedGradeLabel.string = `本次成绩 ${util.formatNumberToTime(this.timeValue)}`;
-        this.failedTipLabel.string = `离目标只有 ${(diffValue / 100).toFixed(2)}啦~`;
+        this.failedTipLabel.string = `离目标只有 ${(diffValue / 100).toFixed(2)} 啦~`;
         this.timeValue = 0;
     },
     resurgence(isRestart = false) {
@@ -282,7 +286,7 @@ cc.Class({
         this.stageLabel.node.active = setValue;
         this.stopBtn.node.active = setValue;
         this.timeLabel.node.active = setValue;
-        this.conditionLable.node.active = setValue;
+        this.conditionNode.active = setValue;
         this.rateLabel.node.active = setValue;
     }
 });
