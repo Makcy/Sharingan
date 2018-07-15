@@ -92,7 +92,7 @@ cc.Class({
         },
         gradeLable: {
             default: null,
-            type: cc.Label
+            type: cc.RichText
         },
         failedGradeLabel: {
             default: null,
@@ -243,7 +243,7 @@ cc.Class({
         if (this.stage < 5) {
             this.resetMainGameNode(false);
             this.passNode.active = true;
-            this.gradeLable.string = `本次成绩：${util.formatNumberToTime(this.timeValue)}`;
+            this.gradeLable.string = `本次成绩：<size=180>${util.formatNumberToTime(this.timeValue)}</size>`;
             this.stage += 1;
         } else {
             this.resetMainGameNode(false);
@@ -262,8 +262,8 @@ cc.Class({
         const stageConfig = this.getStageConfig();
         const diffValue = Math.min(Math.abs(this.timeValue - stageConfig.to), Math.abs(this.timeValue - stageConfig.from));
         this.failedNode.active = true;
-        this.failedGradeLabel.string = `本次成绩 <size=144>${util.formatNumberToTime(this.timeValue)}</size>`;
-        this.failedTipLabel.string = `离目标只有 <size=180>${(diffValue / 100).toFixed(2)}</size> 啦~`;
+        this.failedGradeLabel.string = `本次成绩 <size=160>${util.formatNumberToTime(this.timeValue)}</size>`;
+        this.failedTipLabel.string = `离目标只有 <size=110>${(diffValue / 100).toFixed(2)}</size> 啦~`;
         this.timeValue = 0;
     },
     resurgence(isRestart = false) {
