@@ -183,7 +183,7 @@ cc.Class({
             const self = this;
             cc.loader.loadRes('texture/share',(err, data) => {
                 wx.shareAppMessage({
-                    title: config.shareText[parseInt(Math.random()*config.shareText.length,10)],
+                    title: '我刚通过了全部挑战，你敢来试试吗？',
                     imageUrl: data.url,
                     success(res) {
                         console.log('分享成功');
