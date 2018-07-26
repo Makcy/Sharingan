@@ -225,8 +225,8 @@ cc.Class({
     setConditionTip() {
         const stageConfig = this.getStageConfig();
         this.conditionLable.string = stageConfig.from === stageConfig.to ? 
-             `按到 <size=94>${util.formatNumberToTime(stageConfig.from)}</size> 进入下一关` :
-             `按到 <size=94>${util.formatNumberToTime(stageConfig.from)} - ${util.formatNumberToTime(stageConfig.to)}</size> 通关成功`
+             `按到 <size=94><color=#3F60C7>${util.formatNumberToTime(stageConfig.from)}</color></size> 通关成功` :
+             `按到 <size=94><color=#3F60C7>${util.formatNumberToTime(stageConfig.from)} - ${util.formatNumberToTime(stageConfig.to)}</color></size> 进入下一关`
     },
     setStageTip() {
         this.stageLabel.string = this.stage != 5 ?`第 ${this.stage} 关` : '终极挑战';
