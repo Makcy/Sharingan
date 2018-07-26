@@ -225,12 +225,11 @@ cc.Class({
     setConditionTip() {
         const stageConfig = this.getStageConfig();
         this.conditionLable.string = stageConfig.from === stageConfig.to ? 
-             `按到 <size=94>${util.formatNumberToTime(stageConfig.from)}</size> 通关成功` :
+             `按到 <size=94>${util.formatNumberToTime(stageConfig.from)}</size> 进入下一关` :
              `按到 <size=94>${util.formatNumberToTime(stageConfig.from)} - ${util.formatNumberToTime(stageConfig.to)}</size> 通关成功`
     },
     setStageTip() {
-        // this.stageLabel.string = `第 ${this.stage} 关 ${this.getStageConfig().successRate}%用户能闯关通过`;
-        this.stageLabel.string = `第 ${this.stage} 关`;
+        this.stageLabel.string = this.stage != 5 ?`第 ${this.stage} 关` : '终极挑战';
         this.rateLabel.string = `${this.getStageConfig().successRate}%用户能闯关通过`;
     },
     getStageConfig() {
