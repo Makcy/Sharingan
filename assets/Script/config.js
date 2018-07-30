@@ -1,27 +1,27 @@
 module.exports = {
   stageConfig: [
     {
-      from: 900,
+      from: 90,
       to: 1100,
       successRate: 94.5
     },
     {
-      from: 925,
+      from: 92,
       to: 1075,
       successRate: 69.23
     },
     {
-      from: 950,
+      from: 95,
       to: 1050,
       successRate: 35.24
     },
     {
-      from: 975,
+      from: 97,
       to: 1025,
       successRate: 2.3
     },
     {
-      from: 1000,
+      from: 10,
       to: 1000,
       successRate: 0.01
     }

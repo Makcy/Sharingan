@@ -9,7 +9,9 @@
 //  - [English] http://www.cocos2d-x.org/docs/creator/en/scripting/life-cycle-callbacks.html
 const util = require('./util');
 const config = require('./config');
-
+const successColor = cc.hexToColor("#FFD9BF");
+const normalColor = cc.hexToColor("#DEDEDE");
+const completeColor = cc.hexToColor("#FFF540");
 
 cc.Class({
     extends: cc.Component,
@@ -109,6 +111,10 @@ cc.Class({
         stopBtnSprite: {
             default: null,
             type: cc.SpriteFrame
+        },
+        backGround: {
+            default: null,
+            type: cc.Node
         }
     },
 
@@ -225,8 +231,8 @@ cc.Class({
     setConditionTip() {
         const stageConfig = this.getStageConfig();
         this.conditionLable.string = stageConfig.from === stageConfig.to ? 
-             `按到 <size=94><color=#3F60C7>${util.formatNumberToTime(stageConfig.from)}</color></size> 通关成功` :
-             `按到 <size=94><color=#3F60C7>${util.formatNumberToTime(stageConfig.from)} - ${util.formatNumberToTime(stageConfig.to)}</color></size> 进入下一关`
+             `<color=#435370>按到 </color><color=#3F60C7>${util.formatNumberToTime(stageConfig.from)}</color> <color=#435370>通关成功</color>` :
+             `<color=#435370>按到 </color>${util.formatNumberToTime(stageConfig.from)} - ${util.formatNumberToTime(stageConfig.to)}</color> <color=#435370>进入下一关</color>`
     },
     setStageTip() {
         this.stageLabel.string = this.stage != 5 ?`第 ${this.stage} 关` : '终极挑战';
@@ -241,12 +247,14 @@ cc.Class({
     gameSuccess() {
         if (this.stage < 5) {
             this.resetMainGameNode(false);
+            this.backGround.color = successColor;
             this.passNode.active = true;
-            this.gradeLable.string = `本次成绩：<size=180>${util.formatNumberToTime(this.timeValue)}</size>`;
+            this.gradeLable.string = `<color=#435370>本次成绩：</color><size=120><color=#11164E>${util.formatNumberToTime(this.timeValue)}</color></size>`;
             this.stage += 1;
         } else {
             this.resetMainGameNode(false);
             this.passNode.active = false;
+            this.backGround.color = completeColor;
             this.timeValue = 0;
             this.stage = 1;
             this.setConditionTip();
@@ -261,8 +269,8 @@ cc.Class({
         const stageConfig = this.getStageConfig();
         const diffValue = Math.min(Math.abs(this.timeValue - stageConfig.to), Math.abs(this.timeValue - stageConfig.from));
         this.failedNode.active = true;
-        this.failedGradeLabel.string = `本次成绩 <size=160>${util.formatNumberToTime(this.timeValue)}</size>`;
-        this.failedTipLabel.string = `离目标只有 <size=110>${(diffValue / 100).toFixed(2)}</size> 啦~`;
+        this.failedGradeLabel.string = `<color=#435370>本次成绩：</color><color=#11164E><size=120>${util.formatNumberToTime(this.timeValue)}</size></color>`;
+        this.failedTipLabel.string = `<color=#435370>离目标只有</color><size=110><color=#11164E>${(diffValue / 100).toFixed(2)}</color><color=#435370>啦~</color>`;
         this.timeValue = 0;
     },
     resurgence(isRestart = false) {
@@ -278,6 +286,7 @@ cc.Class({
         this.resetMainGameNode(true);
     },
     resetMainGameNode(setValue) {
+        this.backGround.color = normalColor;
         this.stageLabel.node.active = setValue;
         this.stopBtn.node.active = setValue;
         this.timeLabel.node.active = setValue;
