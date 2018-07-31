@@ -88,6 +88,10 @@ cc.Class({
             default: null,
             type: cc.Button
         },
+        fightAgainBtn: {
+            default: null,
+            type: cc.Button
+        },
         stageLabel: {
             default: null,
             type: cc.Label
@@ -115,6 +119,14 @@ cc.Class({
         backGround: {
             default: null,
             type: cc.Node
+        },
+        userAvatar: {
+            default: null,
+            type: cc.Node
+        },
+        userName: {
+            default: null,
+            type: cc.Label
         }
     },
 
@@ -137,7 +149,8 @@ cc.Class({
             this.nextBtn,
             this.resurgenceBtn,
             this.continueBtn,
-            this.paradeBtn
+            this.paradeBtn,
+            this.fightAgainBtn
         ]);
     },
 
@@ -151,6 +164,7 @@ cc.Class({
         this.resurgenceBtn.node.on('click', this.resurgenceBtnCallback, this);
         this.continueBtn.node.on('click', this.continueBtnCallback, this);
         this.paradeBtn.node.on('click', this.paradeBtnCallback, this);
+        this.fightAgainBtn.node.on('click', this.fightAgainBtnCallback, this);
     },
     update (dt) {
         if (!this.isStopBtn) {
@@ -228,11 +242,14 @@ cc.Class({
             })
         }
     },
+    fightAgainBtnCallback(event) {
+        this.resurgence(true);
+    },
     setConditionTip() {
         const stageConfig = this.getStageConfig();
         this.conditionLable.string = stageConfig.from === stageConfig.to ? 
-             `<color=#435370>按到 </color><color=#3F60C7>${util.formatNumberToTime(stageConfig.from)}</color> <color=#435370>通关成功</color>` :
-             `<color=#435370>按到 </color>${util.formatNumberToTime(stageConfig.from)} - ${util.formatNumberToTime(stageConfig.to)}</color> <color=#435370>进入下一关</color>`
+             `<color=#435370>按到 </color><color=#11164E><size=80><b>${util.formatNumberToTime(stageConfig.from)}</b></size></color> <color=#435370>通关成功</color>` :
+            `<color=#435370>按到 </color><color=#11164E><size=80><b>${util.formatNumberToTime(stageConfig.from)} - ${util.formatNumberToTime(stageConfig.to)}</b></size></color> <color=#435370>进入下一关</color>`
     },
     setStageTip() {
         this.stageLabel.string = this.stage != 5 ?`第 ${this.stage} 关` : '终极挑战';
@@ -260,6 +277,9 @@ cc.Class({
             this.setConditionTip();
             this.setStageTip();
             this.timeLabel.string = util.formatNumberToTime(this.timeValue);
+            if (cc.sys.os != cc.sys.OS_OSX) {
+                this.getUserInfo();
+            }
             this.completedNode.active = true;
             this.timeBgAudioId = cc.audioEngine.play(this.winBgAudioClip, false, 1);
         }
@@ -292,5 +312,22 @@ cc.Class({
         this.timeLabel.node.active = setValue;
         this.conditionLable.node.active = setValue;
         this.rateLabel.node.active = setValue;
+    },
+    getUserInfo() {
+        const self = this;
+        wx.getUserInfo({
+            success: function (res) {
+                const { avatarUrl, nickName } = res.userInfo;
+                if (avatarUrl && nickName) {
+                    self.userName.string = nickName;
+                    cc.loader.load({url: avatarUrl, type: 'png'}, (err, data) => {
+                        if (!err) {
+                            const frame = new cc.SpriteFrame(data);
+                            self.userAvatar.getComponent(cc.Sprite).spriteFrame = frame;
+                        }
+                    });
+                }
+            }
+        })
     }
 });
