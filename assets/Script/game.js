@@ -12,6 +12,7 @@ const config = require('./config');
 const successColor = cc.hexToColor("#FFD9BF");
 const normalColor = cc.hexToColor("#DEDEDE");
 const completeColor = cc.hexToColor("#FFF540");
+let stageConfigData = [];
 
 cc.Class({
     extends: cc.Component,
@@ -187,6 +188,7 @@ cc.Class({
         if (this.isStopBtn && this.timeValue != 0) {
             // 闯关逻辑                     
             const stageConfig = this.getStageConfig();
+            console.info(`停止按钮：${this.stage} ${stageConfig.from}  ${stageConfig.to} ${stageConfig.successRate}`);
             if (this.timeValue >= stageConfig.from && this.timeValue <= stageConfig.to) {
                 this.gameSuccess();
             } else {
@@ -246,20 +248,30 @@ cc.Class({
         this.resurgence(true);
     },
     setConditionTip() {
-        const stageConfig = this.getStageConfig();
+        const stageConfig = this.getStageConfig(true);
+        console.info(`闯关条件：${this.stage} ${stageConfig.from}  ${stageConfig.to} ${stageConfig.successRate}`);
         this.conditionLable.string = stageConfig.from === stageConfig.to ? 
              `<color=#435370>按到 </color><color=#11164E><size=80><b>${util.formatNumberToTime(stageConfig.from)}</b></size></color> <color=#435370>通关成功</color>` :
             `<color=#435370>按到 </color><color=#11164E><size=80><b>${util.formatNumberToTime(stageConfig.from)} - ${util.formatNumberToTime(stageConfig.to)}</b></size></color> <color=#435370>进入下一关</color>`
     },
     setStageTip() {
         this.stageLabel.string = this.stage != 5 ?`第 ${this.stage} 关` : '终极挑战';
+        console.info(`通过率：${this.stage} ${this.getStageConfig().successRate}`);
         this.rateLabel.string = `${this.getStageConfig().successRate}%用户能闯关通过`;
     },
-    getStageConfig() {
-        if (this.stage <= 5) {
-            return config.stageConfig[this.stage - 1];
-        } 
-        return {from: 10, to: 1000, successRate: this.stage < 10 ? (0.01 - this.stage * 0.001).toFixed(2) :  0.01};
+    getStageConfig(isRandom = false) {
+        if (!isRandom && stageConfigData[this.stage - 1]) {
+            return stageConfigData[this.stage - 1];
+        }
+        if (this.stage < 5) {
+            const statePayload = config.stageConfig[this.stage - 1];
+            // [3,7]内随机时间 + 差值
+            const seed = parseInt(Math.random() * 350, 10) + 300;
+            stageConfigData[this.stage - 1] = {from: seed, to: seed + statePayload.diff, successRate: statePayload.successRate};
+        } else {
+            stageConfigData[this.stage - 1] = {from: 500, to: 500, successRate: statePayload.successRate};
+        }
+        return stageConfigData[this.stage - 1];
     },
     gameSuccess() {
         if (this.stage < 5) {
@@ -287,15 +299,17 @@ cc.Class({
     gameFail() {
         this.resetMainGameNode(false);
         const stageConfig = this.getStageConfig();
+        console.info(`游戏失败： ${this.stage} ${stageConfig.from}  ${stageConfig.to} ${stageConfig.successRate}`);
         const diffValue = Math.min(Math.abs(this.timeValue - stageConfig.to), Math.abs(this.timeValue - stageConfig.from));
         this.failedNode.active = true;
         this.failedGradeLabel.string = `<color=#435370>本次成绩：</color><color=#11164E><size=120>${util.formatNumberToTime(this.timeValue)}</size></color>`;
-        this.failedTipLabel.string = `<color=#435370>离目标只有</color><size=110><color=#11164E>${(diffValue / 100).toFixed(2)}</color><color=#435370>啦~</color>`;
+        this.failedTipLabel.string = `<color=#435370>离目标只有</color><size=110><color=#11164E>${(diffValue / 100).toFixed(2)}</color></size><color=#435370>啦~</color>`;
         this.timeValue = 0;
     },
     resurgence(isRestart = false) {
         if (isRestart) {
             this.stage = 1;
+            stageConfigData = [];
         }
         this.timeValue = 0;
         this.completedNode.active = false;
