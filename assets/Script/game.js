@@ -263,8 +263,8 @@ cc.Class({
         if (!isRandom && stageConfigData[this.stage - 1]) {
             return stageConfigData[this.stage - 1];
         }
+        const statePayload = config.stageConfig[this.stage - 1];
         if (this.stage < 5) {
-            const statePayload = config.stageConfig[this.stage - 1];
             // [3,7]内随机时间 + 差值
             const seed = parseInt(Math.random() * 350, 10) + 300;
             stageConfigData[this.stage - 1] = {from: seed, to: seed + statePayload.diff, successRate: statePayload.successRate};
