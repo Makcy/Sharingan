@@ -188,7 +188,7 @@ cc.Class({
         if (this.isStopBtn && this.timeValue != 0) {
             // 闯关逻辑                     
             const stageConfig = this.getStageConfig();
-            console.info(`停止按钮：${this.stage} ${stageConfig.from}  ${stageConfig.to} ${stageConfig.successRate}`);
+            // console.info(`停止按钮：${this.stage} ${stageConfig.from}  ${stageConfig.to} ${stageConfig.successRate}`);
             if (this.timeValue >= stageConfig.from && this.timeValue <= stageConfig.to) {
                 this.gameSuccess();
             } else {
@@ -249,14 +249,14 @@ cc.Class({
     },
     setConditionTip() {
         const stageConfig = this.getStageConfig(true);
-        console.info(`闯关条件：${this.stage} ${stageConfig.from}  ${stageConfig.to} ${stageConfig.successRate}`);
+        // console.info(`闯关条件：${this.stage} ${stageConfig.from}  ${stageConfig.to} ${stageConfig.successRate}`);
         this.conditionLable.string = stageConfig.from === stageConfig.to ? 
              `<color=#435370>按到 </color><color=#11164E><size=80><b>${util.formatNumberToTime(stageConfig.from)}</b></size></color> <color=#435370>通关成功</color>` :
             `<color=#435370>按到 </color><color=#11164E><size=80><b>${util.formatNumberToTime(stageConfig.from)} - ${util.formatNumberToTime(stageConfig.to)}</b></size></color> <color=#435370>进入下一关</color>`
     },
     setStageTip() {
         this.stageLabel.string = this.stage != 5 ?`第 ${this.stage} 关` : '终极挑战';
-        console.info(`通过率：${this.stage} ${this.getStageConfig().successRate}`);
+        // console.info(`通过率：${this.stage} ${this.getStageConfig().successRate}`);
         this.rateLabel.string = `${this.getStageConfig().successRate}%用户能闯关通过`;
     },
     getStageConfig(isRandom = false) {
@@ -299,7 +299,7 @@ cc.Class({
     gameFail() {
         this.resetMainGameNode(false);
         const stageConfig = this.getStageConfig();
-        console.info(`游戏失败： ${this.stage} ${stageConfig.from}  ${stageConfig.to} ${stageConfig.successRate}`);
+        // console.info(`游戏失败： ${this.stage} ${stageConfig.from}  ${stageConfig.to} ${stageConfig.successRate}`);
         const diffValue = Math.min(Math.abs(this.timeValue - stageConfig.to), Math.abs(this.timeValue - stageConfig.from));
         this.failedNode.active = true;
         this.failedGradeLabel.string = `<color=#435370>本次成绩：</color><color=#11164E><size=120>${util.formatNumberToTime(this.timeValue)}</size></color>`;
