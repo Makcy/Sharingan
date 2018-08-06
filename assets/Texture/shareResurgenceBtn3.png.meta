@@ -1,14 +1,14 @@
 {
   "ver": "1.0.0",
-  "uuid": "7358b4e8-3a69-4bad-af56-0d8a436d8719",
+  "uuid": "2fc7e3af-4730-421b-8e5d-dadba9620e8a",
   "type": "sprite",
   "wrapMode": "clamp",
   "filterMode": "bilinear",
   "subMetas": {
-    "share": {
+    "shareResurgenceBtn3": {
       "ver": "1.0.3",
-      "uuid": "6058e91a-2241-4f37-a8d7-e9c1adc9fb0a",
-      "rawTextureUuid": "7358b4e8-3a69-4bad-af56-0d8a436d8719",
+      "uuid": "ac36501e-8782-4ea5-b134-261d3789fcd1",
+      "rawTextureUuid": "2fc7e3af-4730-421b-8e5d-dadba9620e8a",
       "trimType": "auto",
       "trimThreshold": 1,
       "rotated": false,
@@ -16,10 +16,10 @@
       "offsetY": 0,
       "trimX": 0,
       "trimY": 0,
-      "width": 527,
-      "height": 410,
-      "rawWidth": 527,
-      "rawHeight": 410,
+      "width": 972,
+      "height": 336,
+      "rawWidth": 972,
+      "rawHeight": 336,
       "borderTop": 0,
       "borderBottom": 0,
       "borderLeft": 0,

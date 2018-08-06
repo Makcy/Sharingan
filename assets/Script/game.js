@@ -1,18 +1,12 @@
-// Learn cc.Class:
-//  - [Chinese] http://docs.cocos.com/creator/manual/zh/scripting/class.html
-//  - [English] http://www.cocos2d-x.org/docs/creator/en/scripting/class.html
-// Learn Attribute:
-//  - [Chinese] http://docs.cocos.com/creator/manual/zh/scripting/reference/attributes.html
-//  - [English] http://www.cocos2d-x.org/docs/creator/en/scripting/reference/attributes.html
-// Learn life-cycle callbacks:
-//  - [Chinese] http://docs.cocos.com/creator/manual/zh/scripting/life-cycle-callbacks.html
-//  - [English] http://www.cocos2d-x.org/docs/creator/en/scripting/life-cycle-callbacks.html
 const util = require('./util');
 const config = require('./config');
 const successColor = cc.hexToColor("#FFD9BF");
 const normalColor = cc.hexToColor("#DEDEDE");
 const completeColor = cc.hexToColor("#FFF540");
 let stageConfigData = [];
+// let isVibrate = false;
+// let IntervalID;
+// let isPhone = cc.sys.os != cc.sys.OS_OSX || false;
 
 cc.Class({
     extends: cc.Component,
@@ -93,6 +87,10 @@ cc.Class({
             default: null,
             type: cc.Button
         },
+        customerBtn: {
+            default: null,
+            type: cc.Button
+        },
         stageLabel: {
             default: null,
             type: cc.Label
@@ -128,12 +126,25 @@ cc.Class({
         userName: {
             default: null,
             type: cc.Label
+        },
+        tempResurgenceSprite: {
+            default: null,
+            type: cc.SpriteFrame
         }
     },
 
     // LIFE-CYCLE CALLBACKS:
 
     onLoad () {
+        try {
+            cc.game.setFrameRate(60);
+            if (new Date() > new Date('2018/08/07')) {
+                this.resurgenceBtn.getComponent(cc.Sprite).spriteFrame = this.tempResurgenceSprite;
+                this.customerBtn.node.active = true;
+            }
+        } catch (e) {
+            console.log(`锁帧出错：${e}`);
+        }
         if (cc.sys.os != cc.sys.OS_OSX) {
             wx.showShareMenu();
             cc.loader.loadRes('texture/share',(err, data) => {
@@ -151,7 +162,8 @@ cc.Class({
             this.resurgenceBtn,
             this.continueBtn,
             this.paradeBtn,
-            this.fightAgainBtn
+            this.fightAgainBtn,
+            this.customerBtn
         ]);
     },
 
@@ -166,6 +178,7 @@ cc.Class({
         this.continueBtn.node.on('click', this.continueBtnCallback, this);
         this.paradeBtn.node.on('click', this.paradeBtnCallback, this);
         this.fightAgainBtn.node.on('click', this.fightAgainBtnCallback, this);
+        this.customerBtn.node.on('click', this.customerBtnCallback, this);
     },
     update (dt) {
         if (!this.isStopBtn) {
@@ -173,6 +186,18 @@ cc.Class({
             this.timeLabel.string = util.formatNumberToTime(this.timeValue);
         }
     },
+    // lateUpdate (dt) {
+    //     if (isPhone) {
+    //         if (!this.isStopBtn && !isVibrate) {
+    //             isVibrate = this.isStopBtn;
+    //             IntervalID = setInterval(this.getVibrate, 240);
+    //         } 
+    //         if (this.isStopBtn && isVibrate) {
+    //             isVibrate = !this.isStopBtn;
+    //             clearInterval(IntervalID);
+    //         }
+    //     }
+    // },
     stopBtnCallback (event) {
         this.isStopBtn = !this.isStopBtn;
         this.stopBtn.getComponent(cc.Sprite).spriteFrame = this.isStopBtn ? this.startBtnSprite : this.stopBtnSprite;
@@ -205,7 +230,6 @@ cc.Class({
         this.resetMainGameNode(true);
     },
     resurgenceBtnCallback(event) {
-        // 诱导分享
         if (cc.sys.os != cc.sys.OS_OSX) {
             const self = this;
             cc.loader.loadRes('texture/share',(err, data) => {
@@ -227,22 +251,26 @@ cc.Class({
     },
     paradeBtnCallback(event) {
         // 诱导分享
-        if (cc.sys.os != cc.sys.OS_OSX) {
-            const self = this;
-            cc.loader.loadRes('texture/share',(err, data) => {
-                wx.shareAppMessage({
-                    title: '我刚通过了全部挑战，你敢来试试吗？',
-                    imageUrl: data.url,
-                    success(res) {
-                        console.log('分享成功');
-                        self.resurgence(true);
-                    },
-                    fail(res) {
-                        console.log('分享失败');
-                    } 
-                })
-            })
-        }
+        // if (cc.sys.os != cc.sys.OS_OSX) {
+            // const self = this;
+            // cc.loader.loadRes('texture/share',(err, data) => {
+            //     wx.shareAppMessage({
+            //         title: '我刚通过了全部挑战，你敢来试试吗？',
+            //         imageUrl: data.url,
+            //         success(res) {
+            //             console.log('分享成功');
+            //             self.resurgence(true);
+            //         },
+            //         fail(res) {
+            //             console.log('分享失败');
+            //         } 
+            //     })
+            // })
+        // }
+        this.openCustomerSession();
+    },
+    customerBtnCallback(event) {
+        this.openCustomerSession();
     },
     fightAgainBtnCallback(event) {
         this.resurgence(true);
@@ -264,13 +292,12 @@ cc.Class({
             return stageConfigData[this.stage - 1];
         }
         const statePayload = config.stageConfig[this.stage - 1];
+        let seed = 500;
         if (this.stage < 5) {
             // [3,7]内随机时间 + 差值
-            const seed = parseInt(Math.random() * 350, 10) + 300;
-            stageConfigData[this.stage - 1] = {from: seed, to: seed + statePayload.diff, successRate: statePayload.successRate};
-        } else {
-            stageConfigData[this.stage - 1] = {from: 500, to: 500, successRate: statePayload.successRate};
-        }
+            seed = parseInt(Math.random() * 350, 10) + 300;  
+        } 
+        stageConfigData[this.stage - 1] = {from: seed, to: seed + statePayload.diff, successRate: statePayload.successRate};
         return stageConfigData[this.stage - 1];
     },
     gameSuccess() {
@@ -297,6 +324,7 @@ cc.Class({
         }
     },
     gameFail() {
+        this.getVibrate(true);
         this.resetMainGameNode(false);
         const stageConfig = this.getStageConfig();
         // console.info(`游戏失败： ${this.stage} ${stageConfig.from}  ${stageConfig.to} ${stageConfig.successRate}`);
@@ -320,6 +348,9 @@ cc.Class({
         this.resetMainGameNode(true);
     },
     resetMainGameNode(setValue) {
+        if (new Date() > new Date('2018/08/07')) {
+            this.customerBtn.node.active = setValue;
+        }
         this.backGround.color = normalColor;
         this.stageLabel.node.active = setValue;
         this.stopBtn.node.active = setValue;
@@ -343,5 +374,23 @@ cc.Class({
                 }
             }
         })
+    },
+    openCustomerSession() {
+        if (cc.sys.os != cc.sys.OS_OSX) {
+            wx.openCustomerServiceConversation({});
+        }
+    },
+    getVibrate(isLong = false) {
+        if (cc.sys.os != cc.sys.OS_OSX) {
+            try {
+                if (isLong) {
+                    wx.vibrateLong({});
+                } else {
+                    wx.vibrateShort({});
+                }
+            } catch (e) {
+                console.log(e);
+            }
+        }
     }
 });
