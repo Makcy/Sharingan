@@ -1,8 +1,9 @@
 const util = require('./util');
 const config = require('./config');
-const successColor = cc.hexToColor("#FFD9BF");
-const normalColor = cc.hexToColor("#DEDEDE");
-const completeColor = cc.hexToColor("#FFF540");
+const color = new cc.Color();
+const successColor = color.fromHEX("#FFD9BF");
+const normalColor = color.fromHEX("#DEDEDE");
+const completeColor = color.fromHEX("#FFF540");
 let stageConfigData = [];
 // let isVibrate = false;
 // let IntervalID;
@@ -127,7 +128,15 @@ cc.Class({
             default: null,
             type: cc.Label
         },
-        tempResurgenceSprite: {
+        shareResurgenceSprite: {
+            default: null,
+            type: cc.SpriteFrame
+        },
+        wxVideoResurgenceSprite: {
+            default: null,
+            type: cc.SpriteFrame
+        },
+        normalResurgenceSprite: {
             default: null,
             type: cc.SpriteFrame
         }
@@ -138,8 +147,8 @@ cc.Class({
     onLoad () {
         try {
             cc.game.setFrameRate(60);
-            if (new Date() > new Date('2018/08/07')) {
-                this.resurgenceBtn.getComponent(cc.Sprite).spriteFrame = this.tempResurgenceSprite;
+            if (new Date() > new Date('2018/09/28')) {
+                this.resurgenceBtn.getComponent(cc.Sprite).spriteFrame = this.shareResurgenceSprite;
                 this.customerBtn.node.active = true;
             }
         } catch (e) {
@@ -232,18 +241,39 @@ cc.Class({
     resurgenceBtnCallback(event) {
         if (cc.sys.os != cc.sys.OS_OSX) {
             const self = this;
-            cc.loader.loadRes('texture/share',(err, data) => {
-                wx.shareAppMessage({
-                    title: config.shareText[parseInt(Math.random()*config.shareText.length,10)],
-                    imageUrl: data.url,
-                    success(res) {
-                        self.resurgence();
-                    },
-                    fail(res) {
-                        console.log('分享失败');
-                    } 
+            if (this.stage <= 3) {
+                cc.loader.loadRes('texture/share',(err, data) => {
+                    wx.shareAppMessage({
+                        title: config.shareText[parseInt(Math.random()*config.shareText.length,10)],
+                        imageUrl: data.url,
+                        success(res) {
+                            self.resurgence();
+                        },
+                        fail(res) {
+                            console.log('分享失败');
+                        } 
+                    })
                 })
-            })
+            } else {
+                let videoAd = wx.createRewardedVideoAd({
+                    adUnitId: 'adunit-7cb180e5407cc032'
+                })
+                
+                videoAd.load()
+                .then(() => videoAd.show())
+                .catch(err => console.log(err.errMsg))
+
+                videoAd.onClose((status) => {
+                    if (status && status.isEnded || status === undefined) {
+                        // 正常播放结束，可以下发游戏奖励
+                        console.log('正常播放结束');
+                        self.resurgence();
+                    } else {
+                        // 播放中途退出，不下发游戏奖励
+                        console.log('中途退出');
+                    }
+                })
+            }
         }
     },
     continueBtnCallback(event) {
@@ -326,6 +356,9 @@ cc.Class({
     gameFail() {
         this.getVibrate(true);
         this.resetMainGameNode(false);
+        if (this.stage >= 3) {
+            this.resurgenceBtn.getComponent(cc.Sprite).spriteFrame = this.wxVideoResurgenceSprite;
+        }
         const stageConfig = this.getStageConfig();
         // console.info(`游戏失败： ${this.stage} ${stageConfig.from}  ${stageConfig.to} ${stageConfig.successRate}`);
         const diffValue = Math.min(Math.abs(this.timeValue - stageConfig.to), Math.abs(this.timeValue - stageConfig.from));
@@ -338,6 +371,11 @@ cc.Class({
         if (isRestart) {
             this.stage = 1;
             stageConfigData = [];
+            if (new Date() > new Date('2018/09/28')) {
+                this.resurgenceBtn.getComponent(cc.Sprite).spriteFrame = this.shareResurgenceSprite;
+            } else {
+                this.resurgenceBtn.getComponent(cc.Sprite).spriteFrame = this.normalResurgenceSprite;
+            }
         }
         this.timeValue = 0;
         this.completedNode.active = false;
@@ -348,7 +386,7 @@ cc.Class({
         this.resetMainGameNode(true);
     },
     resetMainGameNode(setValue) {
-        if (new Date() > new Date('2018/08/07')) {
+        if (new Date() > new Date('2018/09/28')) {
             this.customerBtn.node.active = setValue;
         }
         this.backGround.color = normalColor;
