@@ -3,7 +3,7 @@ const config = require('./config');
 const successColor = (new cc.Color()).fromHEX("#FFD9BF");
 const normalColor = (new cc.Color()).fromHEX("#DEDEDE");
 const completeColor = (new cc.Color()).fromHEX("#FFF540");
-const hackDate = new Date('2018/10/19');
+const hackDate = new Date('2018/10/10');
 let stageConfigData = [];
 // let isVibrate = false;
 // let IntervalID;
@@ -163,7 +163,23 @@ cc.Class({
                         imageUrl: data.url
                     }
                 });
-            })
+            });
+            
+            const winSize = wx.getSystemInfoSync();
+            const bannerHeight = 30;
+            const bannerWidth = 330;
+            const bannerAd = wx.createBannerAd({
+                adUnitId: 'adunit-b23c840889d066ad',
+                style: {
+                    left: (winSize.windowWidth-bannerWidth) / 2,
+                    top: winSize.windowHeight - bannerHeight,
+                    width: 330
+                }
+            });
+            bannerAd.show();
+            bannerAd.onResize(res => {
+                bannerAd.style.top = winSize.windowHeight - bannerAd.style.realHeight;
+            });
         }
         util.playBtnAudioClip([
             this.stopBtn,
