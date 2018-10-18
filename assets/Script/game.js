@@ -1,9 +1,9 @@
 const util = require('./util');
 const config = require('./config');
-const color = new cc.Color();
-const successColor = color.fromHEX("#FFD9BF");
-const normalColor = color.fromHEX("#DEDEDE");
-const completeColor = color.fromHEX("#FFF540");
+const successColor = (new cc.Color()).fromHEX("#FFD9BF");
+const normalColor = (new cc.Color()).fromHEX("#DEDEDE");
+const completeColor = (new cc.Color()).fromHEX("#FFF540");
+const hackDate = new Date('2018/10/19');
 let stageConfigData = [];
 // let isVibrate = false;
 // let IntervalID;
@@ -147,7 +147,7 @@ cc.Class({
     onLoad () {
         try {
             cc.game.setFrameRate(60);
-            if (new Date() > new Date('2018/09/28')) {
+            if (new Date() > hackDate) {
                 this.resurgenceBtn.getComponent(cc.Sprite).spriteFrame = this.shareResurgenceSprite;
                 this.customerBtn.node.active = true;
             }
@@ -356,7 +356,7 @@ cc.Class({
     gameFail() {
         this.getVibrate(true);
         this.resetMainGameNode(false);
-        if (this.stage >= 3) {
+        if (this.stage > 3) {
             this.resurgenceBtn.getComponent(cc.Sprite).spriteFrame = this.wxVideoResurgenceSprite;
         }
         const stageConfig = this.getStageConfig();
@@ -371,7 +371,7 @@ cc.Class({
         if (isRestart) {
             this.stage = 1;
             stageConfigData = [];
-            if (new Date() > new Date('2018/09/28')) {
+            if (new Date() > hackDate) {
                 this.resurgenceBtn.getComponent(cc.Sprite).spriteFrame = this.shareResurgenceSprite;
             } else {
                 this.resurgenceBtn.getComponent(cc.Sprite).spriteFrame = this.normalResurgenceSprite;
@@ -386,15 +386,15 @@ cc.Class({
         this.resetMainGameNode(true);
     },
     resetMainGameNode(setValue) {
-        if (new Date() > new Date('2018/09/28')) {
+        if (new Date() > hackDate) {
             this.customerBtn.node.active = setValue;
         }
-        this.backGround.color = normalColor;
         this.stageLabel.node.active = setValue;
         this.stopBtn.node.active = setValue;
         this.timeLabel.node.active = setValue;
         this.conditionLable.node.active = setValue;
         this.rateLabel.node.active = setValue;
+        this.backGround.color = normalColor;
     },
     getUserInfo() {
         const self = this;
